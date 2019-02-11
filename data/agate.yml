@@ -1,0 +1,36 @@
+# 2019-02-11 (cc) <paul4hough@gmail.com>
+#
+---
+maul::agate:
+  agate:
+    config:
+      listen-addr:    ":%{lookup('maul::agate_port')}"
+      base-dir:       "%{lookup('maul::agate_base_dir')}"
+      max-days:       15
+      gitlab-url:     https://gitlab.com/api/v4
+      gitlab-token:   secret-token
+      hpsm-url:       https://hpsm/api/v3
+      hpsm-user:      hpsm
+      hpsm-pass:      pass
+
+maul::agate::lvm:
+  lv_agate:
+    pv: /dev/sdb
+    vg: "%{lookup('maul::lvm_vg')}"
+    fstype: xfs
+    size: "%{lookup('maul::agate_lv_size')}"
+    ensure: present
+
+maul::agate::firewall_cs:
+  agate:
+    short: agate
+    description: agate alert gateway
+    port:
+      - port: "%{lookup('maul::agate_port')}"
+        protocol: tcp
+
+maul::agate::firewall_svc:
+  agate:
+    service: agate
+    zone: "%{facts.firewall_zone}"
+    ensure: present

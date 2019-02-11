@@ -1,0 +1,23 @@
+# 2019-02-09 (cc) <paul4hough@gmail.com>
+#
+---
+maul::lvm_vg: vg_maul
+
+maul::consul_version: "1.4.2"
+maul::consul_data_dir: /opt/consul/data
+maul::consul_lv_size: '2G'
+
+maul::prometheus_version: "2.7.1"
+maul::prometheus_config_dir: /etc/prometheus
+maul::prometheus_data_dir: /opt/prometheus/data
+maul::prometheus_lv_size: '2G'
+maul::prometheus_rules_repo: https://github.com/pahoughton/maul-prom-rules
+
+maul::alertmanager_version: '0.16.1'
+maul::alertmanager_data_dir: /opt/alertmanager/data
+maul::alertmanager_lv_size: '2G'
+
+maul::agate_version: '1.0.1'
+maul::agate_base_dir: /opt/agate
+maul::agate_lv_size: '2G'
+maul::agate_port: 4464

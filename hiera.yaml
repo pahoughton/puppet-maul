@@ -1,0 +1,20 @@
+# 2019-02-09 (cc) <paul4hough@gmail.com>
+#
+---
+version: 5
+
+defaults:
+  datadir: data
+  data_hash: yaml_data
+
+hierarchy:
+  - name: common
+    path: common.yml
+  - name: consul
+    path: consul.yml
+  - name: prometheus
+    path: prometheus.yml
+  - name: alertmanager
+    path: alertmanager.yml
+  - name: agate
+    path: agate.yml

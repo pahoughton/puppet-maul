@@ -1,0 +1,19 @@
+# 2019-02-09 (cc) <paul4hough@gmail.com>
+#
+---
+fixtures:
+  symlinks:
+    maul: "#{source_dir}"
+  repositories:
+    archive: https://github.com/voxpupuli/puppet-archive
+    consul: https://github.com/solarkennedy/puppet-consul
+    firewalld: https://github.com/crayfishx/puppet-firewalld
+    lvm: https://github.com/puppetlabs/puppetlabs-lvm
+    prometheus: https://github.com/voxpupuli/puppet-prometheus
+    mount_core: >-
+      https://github.com/puppetlabs/puppetlabs-mount_core
+    mount_providers: >-
+      https://github.com/puppetlabs/puppetlabs-mount_providers
+    stdlib: https://github.com/puppetlabs/puppetlabs-stdlib
+    systemd: https://github.com/camptocamp/puppet-systemd
+    vcsrepo: https://github.com/puppetlabs/puppetlabs-vcsrepo

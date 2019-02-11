@@ -1,0 +1,44 @@
+# 2019-02-09 (cc) <paul4hough@gmail.com>
+#
+---
+
+maul::consul_config:
+  version: "%{lookup('maul::consul_version')}"
+  pretty_config: true
+  config_hash:
+    data_dir: "%{lookup('maul::consul_data_dir')}"
+    datacenter: "%{facts.datacenter}"
+    bind_addr: "%{facts.ipaddress_eth1}"
+    node_meta:
+      servertype: "%{facts.servertype}"
+      mongrp: "%{facts.mongrp}"
+    retry_join:
+      - "%{facts.consul_server}"
+
+maul::consul::config:
+  consul: "%{alias('maul::consul_config')}"
+
+maul::consul::server::config:
+  consul: "%{alias('maul::consul_config')}"
+
+maul::consul::server::lvm:
+  lv_consul:
+    pv: /dev/sdb
+    vg: "%{lookup('maul::lvm_vg')}"
+    fstype: xfs
+    size: "%{lookup('maul::consul_lv_size')}"
+    ensure: present
+
+maul::consul::firewall_cs:
+  consul:
+    short: consul
+    description: consul service discovery
+    port:
+      - port: 8300
+        protocol: tcp
+
+maul::consul::firewall_svc:
+  consul:
+    service: consul
+    zone: "%{facts.firewall_zone}"
+    ensure: present

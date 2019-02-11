@@ -1,0 +1,95 @@
+# 2019-02-10 (cc) <paul4hough@gmail.com>
+#
+---
+
+maul::prom_consul_relabel:
+  - source_labels: [__meta_consul_metadata_servertype]
+    target_label: servertype
+  - source_labels: [__meta_consul_address]
+    target_label: node_addr
+  - source_labels: [__meta_consul_node]
+    target_label: node
+
+maul::prometheus::config:
+  prometheus::server:
+    version: "%{lookup('maul::prometheus_version')}"
+    localstorage: "%{lookup('maul::prometheus_data_dir')}"
+    config_dir: "%{lookup('maul::prometheus_config_dir')}"
+    storage_retention: 30d
+    config_mode: '0664'
+    global_config:
+      scrape_interval: 5m
+      evaluation_interval: 10m
+    alertmanagers_config:
+      - consul_sd_configs:
+          - refresh_interval: 5m
+            services:
+              - alertmanager
+    scrape_configs:
+      - job_name: prometheus
+        relabel_configs: "%{alias('maul::prom_consul_relabel')}"
+        consul_sd_configs:
+          - node_meta:
+              mongrp: "%{facts.prom_mongrp}"
+            refresh_interval: 5m
+            services:
+              - prometheus
+              - alertmanager
+      - job_name: node
+        relabel_configs: "%{alias('maul::prom_consul_relabel')}"
+        consul_sd_configs:
+          - node_meta:
+              mongrp: "%{facts.prom_mongrp}"
+            refresh_interval: 5m
+            services:
+              - node_exporter
+
+maul::scrape_sysv:
+  - job_name: sysv
+    relabel_configs: "%{alias('maul::prom_consul_relabel')}"
+    consul_sd_configs:
+      - node_meta:
+          mongrp: "%{facts.prom_mongrp}"
+        refresh_interval: 5m
+        services:
+          - process-exporter
+
+maul::scrape_cloudera:
+  - job_name: blackbox_cloudera
+    scrape_interval: 30m
+    metrics_path: /probe
+    params:
+      module: [cloudera]
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 127.0.0.1:9115
+    file_sd_configs:
+      - refresh_interval: 15m
+        files:
+          - targets/cloudera.json
+
+maul::prometheus::lvm:
+  lv_prometheus:
+    pv: /dev/sdb
+    vg: "%{lookup('maul::lvm_vg')}"
+    fstype: xfs
+    size: "%{lookup('maul::prometheus_lv_size')}"
+    ensure: present
+
+maul::prometheus::firewall_cs:
+  prometheus:
+    short: prometheus
+    description: prometheus metrics collector
+    port:
+      - port: 9090
+        protocol: tcp
+
+maul::prometheus::firewall_svc:
+  prometheus:
+    service: prometheus
+    zone: "%{facts.firewall_zone}"
+    ensure: present

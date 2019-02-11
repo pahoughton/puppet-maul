@@ -1,0 +1,55 @@
+# 2019-02-11 (cc) <paul4hough@gmail.com>
+#
+---
+
+maul::alertmanager::config:
+  prometheus::alertmanager:
+    version: '0.16.1'
+    storage_path: "%{lookup('maul::alertmanager_data_dir')}"
+    global:
+      resolve_timeout: 24h
+    route:
+      receiver: agate-resolve
+      group_by:
+        - alertname
+        - instance
+        repeat_interval: 168h
+        routes:
+          - receiver: agate-no-resolve
+            match_re:
+              no_resolve: '.*'
+    receivers:
+      - name: agate-no-resolve
+        webhook_configs:
+          send_resolved: false
+          url: "http://%{lookup('maul::agate_address')/alerts"
+      - name: agate-resolve
+        webhook_configs:
+          send_resolved: true
+          url: "http://%{lookup('maul::agate_address')/alerts"
+
+maul::alertmanager::lvm:
+  lv_alertmanager:
+    pv: /dev/sdb
+    vg: "%{lookup('maul::lvm_vg')}"
+    fstype: xfs
+    size: "%{lookup('maul::alertmanager_lv_size')}"
+    ensure: present
+
+maul::alertmanager::firewall_cs:
+  alertmanager:
+    short: alertmanager
+    description: prometheus alertmanager
+    port:
+      - port: 9093
+        protocol: tcp
+      - port: 9094
+        protocol: tcp
+      - port: 9094
+        protocol: udp
+
+maul::alertmanager::firewall_svc:
+  alertmanager:
+    service: alertmanager
+    zone: "%{facts.firewall_zone}"
+    ensure: present
