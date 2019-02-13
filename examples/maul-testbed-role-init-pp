@@ -1,0 +1,13 @@
+# 2019-02-09 (cc) <paul4hough@gmail.com>
+#
+class maul_testbed_role {
+
+  include 'maul::consul::server'
+  include 'maul::prometheus'
+  include 'maul::alertmanager'
+  include 'maul::agate'
+  include 'maul::grafana'
+  include 'maul::exporter::consul'
+  include 'maul::exporter::node'
+  include 'maul::exporter::blackbox'
+}
