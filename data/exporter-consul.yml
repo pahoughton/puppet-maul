@@ -1,0 +1,7 @@
+# 2019-02-12 (cc) <paul4hough@gmail.com>
+#
+---
+maul::exporter::consul::config:
+  prometheus::consul_exporter:
+    version: "%{lookup('maul::consul_exporter_version')}"
+    web_listen_address: ":%{lookup('maul::consul_exporter_port')}"

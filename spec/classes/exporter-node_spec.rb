@@ -1,8 +1,8 @@
-# 2019-02-09 (cc) <paul4hough@gmail.com>
+# 2019-02-12 (cc) <paul4hough@gmail.com>
 #
 require 'spec_helper'
 
-tobj = 'maul::consul'
+tobj = 'maul::exporter::node'
 describe tobj, :type => :class do
   on_supported_os.each do |os, facts|
     context "on #{os}" do
@@ -10,17 +10,13 @@ describe tobj, :type => :class do
         facts.merge(os_specific_facts(facts))
       end
       [tobj,
-       "consul",
+       'prometheus::node_exporter',
       ].each { |cls|
         it { is_expected.to contain_class(cls) }
       }
-      ['unzip',
-       'firewalld'
-      ].each { |pkg|
-        it { is_expected.to contain_package(pkg)}
-      }
-      it { is_expected.to contain_firewalld__custom_service('consul') }
-      it { is_expected.to contain_firewalld_service('consul') }
+      it { is_expected.to contain_consul__service('node_exporter') }
+      it { is_expected.to contain_firewalld__custom_service('node_exporter') }
+      it { is_expected.to contain_firewalld_service('node_exporter') }
       it { is_expected.to contain_service('firewalld') }
     end
   end

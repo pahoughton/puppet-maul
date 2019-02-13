@@ -1,0 +1,85 @@
+# 2019-02-12 (cc) <paul4hough@gmail.com>
+#
+---
+roles:
+  maul_agate_amgr_prom:
+    - maul::agate
+    - maul::alertmanager
+    - maul::prometheus
+    - maul::consul
+    - maul::exporter::node
+
+  maul_amgr_prom:
+    - maul::alertmanager
+    - maul::prometheus
+    - maul::consul
+    - maul::exporter::node
+
+  maul_bbox_consul_prom:
+    - maul::prometheus
+    - maul::consul
+    - maul::exporter::blackbox
+    - maul::exporter::consul
+    - maul::exporter::node
+
+  maul_grafana:
+    - maul::grafana
+    - maul::consul
+    - maul::exporter::node
+
+  maul_consul_server:
+    - maul::consul::server
+    - maul::exporter::node
+
+  maul_node:
+    - maul::consul
+    - maul::exporter::node
+
+sandbox:
+  - cluster-01:
+      - node-01:
+          role: maul_agate_amgr_prom
+          physical: 01
+          prom_mongrp: 02-01
+          mongrp: 01-01
+      - node-02:
+          role: maul_amgr_prom
+          physical: 02
+          prom_mongrp: 02-02
+          mongrp: 01-02
+      - node-03:
+          role: maul_bbox_consul_prom
+          physical: 03
+          prom_mongrp: 02-03
+          mongrp: 01-03
+      - node-04:
+          role: maul_grafana
+          mongrp: 01-01
+      - node-05:
+          role: maul_consul_server
+          physical: 01
+          mongrp: 01-01
+      - node-06:
+          role: maul_consul_server
+          physical: 02
+          mongrp: 01-02
+      - node-07:
+          role: maul_consul_server
+          physical: 03
+          mongrp: 01-03
+      - node-08-1999:
+          role: maul_node
+          mongrp: 01-01
+      - node-2000-3999:
+          role: maul_node
+          mongrp: 01-02
+      - node-4000-6999:
+          role: maul_node
+          mongrp: 01-03
+  - cluster-02:
+      - node-01:
+          prom_mongrp: 01-01
+          mongrp: 02-01
+      - node-02:
+          prom_mongrp: 01-02
+          mongrp: 02-02

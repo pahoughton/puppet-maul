@@ -4,7 +4,7 @@
 
 maul::alertmanager::config:
   prometheus::alertmanager:
-    version: '0.16.1'
+    version: "%{lookup('maul::alertmanager_version')}"
     storage_path: "%{lookup('maul::alertmanager_data_dir')}"
     global:
       resolve_timeout: 24h
@@ -13,20 +13,20 @@ maul::alertmanager::config:
       group_by:
         - alertname
         - instance
-        repeat_interval: 168h
-        routes:
-          - receiver: agate-no-resolve
-            match_re:
-              no_resolve: '.*'
+      repeat_interval: 168h
+      routes:
+        - receiver: agate-no-resolve
+          match_re:
+            no_resolve: '.*'
     receivers:
       - name: agate-no-resolve
         webhook_configs:
-          send_resolved: false
-          url: "http://%{lookup('maul::agate_address')/alerts"
+          - send_resolved: false
+            url: "%{lookup('maul::agate_url')}"
       - name: agate-resolve
         webhook_configs:
-          send_resolved: true
-          url: "http://%{lookup('maul::agate_address')/alerts"
+          - send_resolved: true
+            url: "%{lookup('maul::agate_url')}"
 
 maul::alertmanager::lvm:
   lv_alertmanager:
@@ -36,16 +36,22 @@ maul::alertmanager::lvm:
     size: "%{lookup('maul::alertmanager_lv_size')}"
     ensure: present
 
+maul::alertmanager::consul_svc:
+  alertmanager:
+    port: "%{lookup('maul::alertmanager_port')}"
+    meta:
+      mongrp: "%{facts.mongrp}"
+
 maul::alertmanager::firewall_cs:
   alertmanager:
     short: alertmanager
     description: prometheus alertmanager
     port:
-      - port: 9093
+      - port: "%{lookup('maul::alertmanager_port')}"
         protocol: tcp
-      - port: 9094
+      - port: "%{lookup('maul::alertmanager_cluster_port')}"
         protocol: tcp
-      - port: 9094
+      - port: "%{lookup('maul::alertmanager_cluster_port')}"
         protocol: udp
 
 maul::alertmanager::firewall_svc:

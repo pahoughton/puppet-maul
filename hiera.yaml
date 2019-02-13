@@ -18,3 +18,11 @@ hierarchy:
     path: alertmanager.yml
   - name: agate
     path: agate.yml
+  - name: grafana
+    path: grafana.yml
+  - name: consul exporter
+    path: exporter-consul.yml
+  - name: node exporter
+    path: exporter-node.yml
+  - name: blackbox exporter
+    path: exporter-blackbox.yml

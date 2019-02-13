@@ -15,8 +15,7 @@ class maul::consul(
   create_resources('class', $config)
 
   ensure_resource(
-    'service',
-    'firewalld',
+    'service','firewalld',
     {
       ensure => 'running',
       enable => true

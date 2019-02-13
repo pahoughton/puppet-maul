@@ -1,0 +1,31 @@
+# 2019-02-12 (cc) <paul4hough@gmail.com>
+#
+---
+maul::exporter::node::config:
+  prometheus::node_exporter:
+    version: "%{lookup('maul::node_exporter_version')}"
+    collectors_enable:
+      - systemd
+    # --web.disable-exporter-metrics
+    extra_options: >-
+      "--web.listen-address ':%{lookup('maul::node_exporter_port')}'"
+
+maul::exporter::node::consul_svc:
+  node_exporter:
+    port: "%{lookup('maul::node_exporter_port')}"
+    meta:
+      mongrp: "%{facts.mongrp}"
+
+maul::exporter::node::firewall_cs:
+  node_exporter:
+    short: node_exporter
+    description: provide node prometheus metrics
+    port:
+      - port: "%{lookup('maul::node_exporter_port')}"
+        protocol: tcp
+
+maul::exporter::node::firewall_svc:
+  node_exporter:
+    service: node_exporter
+    zone: "%{facts.firewall_zone}"
+    ensure: present

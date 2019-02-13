@@ -1,0 +1,3 @@
+<% require 'json' -%>
+<% config = scope.lookupvar('::maul::prometheus::cloudera_targets') -%>
+<%= config.to_json -%>

@@ -3,6 +3,7 @@
 class maul::consul::server(
   $config,
   $lvm,
+  $server_cfg,
 ) {
 
   ensure_packages(
@@ -10,15 +11,6 @@ class maul::consul::server(
       'lvm2'],
     { ensure => 'present' })
 
-  # FIXME - change bootstrap_expect to 3
-  $server_cfg =  {
-    consul => {
-      config_hash => {
-        server           => true,
-        bootstrap_expect => 1,
-      }
-    }
-  }
   $maul_consul = {
     'maul::consul' => {
       config => deep_merge($config,$server_cfg),

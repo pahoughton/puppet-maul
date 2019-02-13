@@ -21,6 +21,13 @@ maul::consul::config:
 maul::consul::server::config:
   consul: "%{alias('maul::consul_config')}"
 
+maul::consul::server::server_cfg:
+  consul:
+    config_hash:
+      server: true
+      # FIXME - change bootstrap_expect to 3
+      bootstrap_expect: 1
+
 maul::consul::server::lvm:
   lv_consul:
     pv: /dev/sdb
@@ -34,7 +41,7 @@ maul::consul::firewall_cs:
     short: consul
     description: consul service discovery
     port:
-      - port: 8300
+      - port: "%{lookup('maul::consul_port')}"
         protocol: tcp
 
 maul::consul::firewall_svc:

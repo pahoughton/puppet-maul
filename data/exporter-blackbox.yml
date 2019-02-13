@@ -1,0 +1,25 @@
+# 2019-02-12 (cc) <paul4hough@gmail.com>
+#
+---
+maul::blackbox_mod_cloudera:
+  cloudera:
+    prober: http
+    http:
+      basic_auth:
+        username: maulccop
+        password: secret-sauce
+      fail_if_matches_regexp:
+        - "ERROR"
+
+maul::blackbox_mod_hpsm:
+  hpsm:
+    prober: http
+    http:
+      basic_auth:
+        username: maulccop
+        password: secret-sause
+
+maul::exporter::blackbox::config:
+  prometheus::blackbox_exporter:
+    version: "%{lookup('maul::blackbox_exporter_version')}"
+    modules: ~

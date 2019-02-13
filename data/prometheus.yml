@@ -22,9 +22,14 @@ maul::prometheus::config:
       evaluation_interval: 10m
     alertmanagers_config:
       - consul_sd_configs:
-          - refresh_interval: 5m
+          - node_meta:
+              mongrp: "%{facts.mongrp}"
+            refresh_interval: 5m
             services:
               - alertmanager
+    rule_files:
+      - rules/alerts/base/*.yml
+      - rules/alerts/systemd/*.yml
     scrape_configs:
       - job_name: prometheus
         relabel_configs: "%{alias('maul::prom_consul_relabel')}"
@@ -34,7 +39,6 @@ maul::prometheus::config:
             refresh_interval: 5m
             services:
               - prometheus
-              - alertmanager
       - job_name: node
         relabel_configs: "%{alias('maul::prom_consul_relabel')}"
         consul_sd_configs:
@@ -44,33 +48,106 @@ maul::prometheus::config:
             services:
               - node_exporter
 
-maul::scrape_sysv:
-  - job_name: sysv
-    relabel_configs: "%{alias('maul::prom_consul_relabel')}"
-    consul_sd_configs:
-      - node_meta:
-          mongrp: "%{facts.prom_mongrp}"
-        refresh_interval: 5m
-        services:
-          - process-exporter
+maul::scrape_alertmanager:
+  job_name: alertmanager
+  relabel_configs: "%{alias('maul::prom_consul_relabel')}"
+  consul_sd_configs:
+    - node_meta:
+        mongrp: "%{facts.prom_mongrp}"
+      refresh_interval: 5m
+      services:
+        - alertmanager
+
+maul::scrape_agate:
+  job_name: agate
+  relabel_configs: "%{alias('maul::prom_consul_relabel')}"
+  consul_sd_configs:
+    - node_meta:
+        mongrp: "%{facts.prom_mongrp}"
+      refresh_interval: 5m
+      services:
+        - agate
+
+maul::scrape_consul:
+  job_name: consul
+  relabel_configs: "%{alias('maul::prom_consul_relabel')}"
+  static_configs:
+    - targets:
+        - "localhost:%{lookup('maul::consul_exporter_port')}"
 
 maul::scrape_cloudera:
-  - job_name: blackbox_cloudera
-    scrape_interval: 30m
-    metrics_path: /probe
-    params:
-      module: [cloudera]
-    relabel_configs:
-      - source_labels: [__address__]
-        target_label: __param_target
-      - source_labels: [__param_target]
-        target_label: instance
-      - target_label: __address__
-        replacement: 127.0.0.1:9115
-    file_sd_configs:
-      - refresh_interval: 15m
-        files:
-          - targets/cloudera.json
+  job_name: cloudera
+  scrape_interval: 5m
+  metrics_path: /probe
+  params:
+    module: [cloudera]
+  relabel_configs:
+    - source_labels: [__address__]
+      target_label: __param_target
+    - source_labels: [__param_target]
+      target_label: instance
+    - target_label: __address__
+      replacement: "127.0.0.1:%{lookup('maul::blackbox_exporter_port')}"
+  file_sd_configs:
+    - refresh_interval: 15m
+      files:
+        - targets/cloudera.json
+
+maul::scrape_grafana:
+  job_name: gafana
+  relabel_configs: "%{alias('maul::prom_consul_relabel')}"
+  consul_sd_configs:
+    - node_meta:
+        mongrp: "%{facts.prom_mongrp}"
+      refresh_interval: 5m
+      services:
+        - grafana
+
+maul::scrape_hpsm:
+  job_name: hpsm
+  scrape_interval: 5m
+  metrics_path: /probe
+  params:
+    module: [hpsm]
+  relabel_configs:
+    - source_labels: [__address__]
+      target_label: __param_target
+    - source_labels: [__param_target]
+      target_label: instance
+    - target_label: __address__
+      replacement: "127.0.0.1:%{lookup('maul::blackbox_exporter_port')}"
+  file_sd_configs:
+    - refresh_interval: 15m
+      files:
+        - targets/hpsm.json
+
+maul::scrape_sysv:
+  job_name: sysv
+  relabel_configs: "%{alias('maul::prom_consul_relabel')}"
+  consul_sd_configs:
+    - node_meta:
+        mongrp: "%{facts.prom_mongrp}"
+      refresh_interval: 5m
+      services:
+        - process-exporter
+
+maul::bbox_cloudera_targets:
+  - targets:
+      - http://10.0.2.2:5001/mock/cloudera
+    labels:
+      node: cbed
+
+maul::bbox_hpsm_targets:
+  - targets:
+      - http://10.0.2.2:5001/mock/hpsm
+    labels:
+      node: cbed
+
+maul::prometheus::consul_svc:
+  prometheus:
+    port: "%{lookup('maul::prometheus_port')}"
+    meta:
+      mongrp: "%{facts.mongrp}"
 
 maul::prometheus::lvm:
   lv_prometheus:
@@ -85,7 +162,7 @@ maul::prometheus::firewall_cs:
     short: prometheus
     description: prometheus metrics collector
     port:
-      - port: 9090
+      - port: "%{lookup('maul::prometheus_port')}"
         protocol: tcp
 
 maul::prometheus::firewall_svc:

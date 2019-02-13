@@ -1,17 +1,31 @@
 # 2019-02-11 (cc) <paul4hough@gmail.com>
 #
 ---
-maul::agate:
+maul::agate::config:
   agate:
+    version: "%{lookup('maul::agate_version')}"
+    config_dir: "%{lookup('maul::agate_config_dir')}"
+    data_dir: "%{lookup('maul::agate_data_dir')}"
     config:
-      listen-addr:    ":%{lookup('maul::agate_port')}"
-      base-dir:       "%{lookup('maul::agate_base_dir')}"
-      max-days:       15
-      gitlab-url:     https://gitlab.com/api/v4
-      gitlab-token:   secret-token
-      hpsm-url:       https://hpsm/api/v3
-      hpsm-user:      hpsm
-      hpsm-pass:      pass
+      listen-addr: ":%{lookup('maul::agate_port')}"
+      ticket-default-sys: mock
+      ticket-default-grp: user/project
+      max-days: 15
+      gitlab-url: https://localhost:1234/api/v4
+      gitlab-token: secret-token
+      hpsm-base-url: https://localhost:1234/api/v3
+      hpsm-create-ep: incident2
+      hpsm-update-ep: incident2
+      hpsm-close-ep: incident3
+      hpsm-user: hpsm
+      hpsm-pass: pass
+      mock-ticket-url: http://localhost:1234/ticket
+
+maul::agate::vcs_scripts:
+  "%{lookup('maul::agate_config_dir')}/scripts":
+    ensure: present
+    provider: git
+    source: "%{lookup('maul::agate_scripts_repo')}"
 
 maul::agate::lvm:
   lv_agate:
@@ -20,6 +34,12 @@ maul::agate::lvm:
     fstype: xfs
     size: "%{lookup('maul::agate_lv_size')}"
     ensure: present
+
+maul::agate::consul_svc:
+  agate:
+    port: "%{lookup('maul::agate_port')}"
+    meta:
+      mongrp: "%{facts.mongrp}"
 
 maul::agate::firewall_cs:
   agate:

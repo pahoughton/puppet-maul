@@ -1,13 +1,12 @@
-# 2019-02-11 (cc) <paul4hough@gmail.com>
+# 2019-02-12 (cc) <paul4hough@gmail.com>
 #
-class maul::agate(
+class maul::grafana(
   $config,
   $lvm,
   $consul_svc,
   $firewall_cs,
   $firewall_svc,
-  $vcs_scripts,
-) {
+  ) {
   ensure_packages(
     [ 'unzip',
       'e2fsprogs',
@@ -19,22 +18,33 @@ class maul::agate(
   create_resources('class', $config )
   create_resources('consul::service', $consul_svc)
 
-  $scripts_dir = "${lookup('maul::agate_config_dir')}/scripts"
-  create_resources('vcsrepo', $vcs_scripts)
-
   create_resources( 'lvm::volume', $lvm )
 
   $lvm_vg = lookup('maul::lvm_vg')
-  $agate_mp = dirname( lookup('maul::agate_data_dir') )
-  ensure_resource('file',$agate_mp, { ensure => 'directory' })
-  mount { $agate_mp:
+  $data_dir =  lookup('maul::grafana_data_dir')
+  $mount_dir = dirname( $data_dir )
+  ensure_resource( 'file', $mount_dir, { ensure => 'directory' })
+
+  mount { $mount_dir:
     ensure => 'mounted',
-    device => "/dev/${lvm_vg}/lv_agate",
+    device => "/dev/${lvm_vg}/lv_grafana",
     fstype => 'xfs',
     atboot => true,
     dump   => 0,
     pass   => 2,
   }
+  # grafana defaults to package install
+  # which creates the grafana user
+  ensure_resource(
+    'file', $data_dir,
+    {
+      ensure  => 'directory',
+      owner   => 'grafana',
+      group   => 'grafana',
+      mode    => '0775',
+      require => Package['grafana']
+    }
+  )
 
   ensure_resource(
     'service',
@@ -49,11 +59,11 @@ class maul::agate(
   -> Package['lvm2']
   -> Package['firewalld']
   -> Package['git']
-  -> Lvm::Volume['lv_agate']
-  -> Mount[$agate_mp]
-  -> Class['agate']
-  -> Vcsrepo[$scripts_dir]
+  -> Lvm::Volume['lv_grafana']
+  -> Mount[$mount_dir]
+  -> Class['grafana']
   -> Service['firewalld']
-  -> Firewalld::Custom_service['agate']
-  -> Firewalld_service['agate']
+  -> Firewalld::Custom_service['grafana']
+  -> Firewalld_service['grafana']
+
 }

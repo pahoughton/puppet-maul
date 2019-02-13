@@ -1,0 +1,36 @@
+# 2019-02-12 (cc) <paul4hough@gmail.com>
+#
+---
+
+maul::grafana::config:
+  grafana:
+    version: "%{lookup('maul::grafana_version')}"
+    data_dir: "%{lookup('maul::grafana_data_dir')}"
+
+maul::grafana::lvm:
+  lv_grafana:
+    pv: /dev/sdb
+    vg: "%{lookup('maul::lvm_vg')}"
+    fstype: xfs
+    size: "%{lookup('maul::grafana_lv_size')}"
+    ensure: present
+
+maul::grafana::consul_svc:
+  grafana:
+    port: "%{lookup('maul::grafana_port')}"
+    meta:
+      mongrp: "%{facts.mongrp}"
+
+maul::grafana::firewall_cs:
+  grafana:
+    short: grafana
+    description: prometheus grafana
+    port:
+      - port: "%{lookup('maul::grafana_port')}"
+        protocol: tcp
+
+maul::grafana::firewall_svc:
+  grafana:
+    service: grafana
+    zone: "%{facts.firewall_zone}"
+    ensure: present

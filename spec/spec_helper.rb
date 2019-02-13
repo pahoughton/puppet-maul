@@ -1,5 +1,8 @@
 # 2019-02-09 (cc) <paul4hough@gmail.com>
 #
+RSpec.configure do |c|
+  c.mock_with :rspec
+end
 require 'puppetlabs_spec_helper/module_spec_helper'
 require 'rspec-puppet-facts'
 include RspecPuppetFacts
@@ -7,18 +10,6 @@ include RspecPuppetFacts
 RSpec.configure do |c|
   c.fail_fast       = true
   c.default_facts   = {
-    # :kernel => 'Linux',
-    # :os     => {
-    #   :family => 'RedHat',
-    #   :release => {
-    #     :major => '7'
-    #   }
-    # },
-    # :ipaddress_lo               => '127.0.0.1',
-    # :osfamily                   => 'RedHat',
-    # :operatingsystem            => 'CentOS',
-    # :operatingsystemmajrelease  => '7',
-    # :architecture               => 'x86_64',
 
     :firewall_zone     => 'external',
     :datacenter        => 'maul',
@@ -26,6 +17,14 @@ RSpec.configure do |c|
     :mongrp            => 'mon-01',
     :prom_mongrp       => 'mon-01',
     :consul_server     => '10.0.7.5',
+
+    :maul_alert_agate        => true,
+    :maul_alert_alertmanager => true,
+    :maul_alert_cloudera     => true,
+    :maul_alert_consul       => true,
+    :maul_alert_grafana      => true,
+    :maul_alert_hpsm         => true,
+    :maul_alert_sysv         => true,
   }
 end
 

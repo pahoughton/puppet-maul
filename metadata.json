@@ -9,6 +9,10 @@
   "issue_url": "https://github.com/pahoughton/puppet-amaul/issues",
   "dependencies": [
     {
+      "name": "pahoughton/agate",
+      "version_requirement": ">=0.2.2 < 1.0.0"
+    },
+    {
       "name": "puppet/archive",
       "version_requirement": ">=2.2.0 < 4.0.0"
     },
@@ -19,6 +23,10 @@
     {
       "name": "crayfishx/firewalld",
       "version_requirement": ">=3.4.0 < 4.0.0"
+    },
+    {
+      "name": "puppet/grafana",
+      "version_requirement": ">=5.0.0 < 6.0.0"
     },
     {
       "name": "puppetlabs/lvm",
@@ -47,6 +55,10 @@
     {
       "name": "puppetlabs/vcsrepo",
       "version_requirement": ">= 2.4.0 < 3.0.0"
+    },
+    {
+      "name": "puppetlabs/yumrepo_core",
+      "version_requirement": ">= 1.0.3 < 2.0.0"
     }
   ],
   "operatingsystem_support": [

@@ -5,9 +5,11 @@ fixtures:
   symlinks:
     maul: "#{source_dir}"
   repositories:
+    agate: https://github.com/pahoughton/puppet-agate
     archive: https://github.com/voxpupuli/puppet-archive
     consul: https://github.com/solarkennedy/puppet-consul
     firewalld: https://github.com/crayfishx/puppet-firewalld
+    grafana: https://github.com/voxpupuli/puppet-grafana
     lvm: https://github.com/puppetlabs/puppetlabs-lvm
     prometheus: https://github.com/voxpupuli/puppet-prometheus
     mount_core: >-
@@ -17,3 +19,6 @@ fixtures:
     stdlib: https://github.com/puppetlabs/puppetlabs-stdlib
     systemd: https://github.com/camptocamp/puppet-systemd
     vcsrepo: https://github.com/puppetlabs/puppetlabs-vcsrepo
+    yumrepo_core:
+      repo: https://github.com/puppetlabs/puppetlabs-yumrepo_core.git
+      puppet_version: ">= 6.0.0"
