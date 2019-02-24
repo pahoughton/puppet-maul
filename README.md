@@ -6,7 +6,7 @@
 Maul is monitoring and alerting system that utilizes the prometheus
 tool set, consul and agate to generates tickets for defects.
 
-## features
+## classes
 
 * maul::consul
 * maul::consul::server
@@ -20,7 +20,11 @@ tool set, consul and agate to generates tickets for defects.
 * maul::exporter::postgres
 * maul::exporter::process
 
-## usage
+## validation
+
+* .travis.yml
+* .gitlab-ci.yml
+
 
 ### configuration
 
