@@ -21,7 +21,7 @@ maul::alertmanager_lv_size: '2G'
 maul::alertmanager_port: 9093
 maul::alertmanager_cluster_port: 9094
 
-maul::agate_version: '0.2.2'
+maul::agate_version: '0.3.1'
 maul::agate_config_dir: /etc/agate
 maul::agate_data_dir: /opt/agate/data
 maul::agate_lv_size: '2G'
@@ -29,6 +29,7 @@ maul::agate_scripts_repo: https://github.com/pahoughton/agate-scripts
 maul::agate_port: 4464
 # yamllint disable-line rule:line-length
 maul::agate_url: "http://%{facts.maul_agate_node}:%{lookup('maul::agate_port')}/alerts"
+maul::agate_mock_addr: localhost:6102
 
 maul::grafana_version: '5.4.3'
 maul::grafana_data_dir: /opt/grafana/data

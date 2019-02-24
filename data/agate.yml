@@ -7,19 +7,10 @@ maul::agate::config:
     config_dir: "%{lookup('maul::agate_config_dir')}"
     data_dir: "%{lookup('maul::agate_data_dir')}"
     config:
-      listen-addr: ":%{lookup('maul::agate_port')}"
-      ticket-default-sys: mock
-      ticket-default-grp: user/project
-      max-days: 15
-      gitlab-url: https://localhost:1234/api/v4
-      gitlab-token: secret-token
-      hpsm-base-url: https://localhost:1234/api/v3
-      hpsm-create-ep: incident2
-      hpsm-update-ep: incident2
-      hpsm-close-ep: incident3
-      hpsm-user: hpsm
-      hpsm-pass: pass
-      mock-ticket-url: http://localhost:1234/ticket
+      ticket-sys:
+        systems:
+          mock:
+            url: "http://%{lookup('maul::agate_mock_addr')}/ticket"
 
 maul::agate::vcs_scripts:
   "%{lookup('maul::agate_config_dir')}/scripts":
