@@ -1,0 +1,16 @@
+# .travis.yml - 2019-02-24
+#
+# (cc) <paul4hough@gmail.com>
+---
+dist: xenial
+language: ruby
+notifications:
+  email:
+    - paul4hough@gmail.com
+
+install:
+  - sudo apt install libaugeas-dev
+  - bundle install
+
+script:
+  - bundle exec rake travis

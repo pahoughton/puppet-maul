@@ -9,11 +9,17 @@ at_exit {
   puts "run time: #{runtime}"
 }
 
+desc 'yamllint data'
 task :yamllint do
   sh "yamllint -f parsable" +\
      " .fixtures.yml" +\
+     " .travis.yml" +\
      " hiera.yaml" +\
      " data"
 end
 
+desc 'all test'
 task :test => [:yamllint,:lint,:validate,:spec]
+
+desc 'travis-ci tasks'
+task :travis => [:lint,:validate,:spec]
