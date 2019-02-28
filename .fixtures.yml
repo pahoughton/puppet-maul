@@ -6,6 +6,8 @@ fixtures:
     maul: "#{source_dir}"
   repositories:
     agate: https://github.com/pahoughton/puppet-agate
+    alertmanager_cloudera: >-
+       https://github.com/pahoughton/puppet-alertmanager_cloudera
     archive: https://github.com/voxpupuli/puppet-archive
     consul: https://github.com/solarkennedy/puppet-consul
     firewalld: https://github.com/crayfishx/puppet-firewalld
