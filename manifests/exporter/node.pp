@@ -1,10 +1,10 @@
 # 2019-02-12 (cc) <paul4hough@gmail.com>
 #
 class maul::exporter::node(
-  $config,
-  $consul_svc,
-  $firewall_cs,
-  $firewall_svc,
+  Hash $config,
+  Hash $consul_svc,
+  Hash $firewall_cs,
+  Hash $firewall_svc,
 ) {
 
   create_resources('class', $config )
