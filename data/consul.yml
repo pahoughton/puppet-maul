@@ -2,18 +2,21 @@
 #
 ---
 
+maul::consul_data_dir: /opt/consul/data
+maul::consul_lv_size: '2G'
+maul::consul_port: 8300
+
 maul::consul_config:
-  version: "%{lookup('maul::consul_version')}"
+  version: "1.4.2"
   pretty_config: true
   config_hash:
     data_dir: "%{lookup('maul::consul_data_dir')}"
-    datacenter: "%{facts.datacenter}"
-    bind_addr: "%{facts.ipaddress_eth1}"
+    datacenter: "%{lookup('maul::datacenter')}"
+    bind_addr: "%{lookup('maul::node_addr')}"
     node_meta:
-      servertype: "%{facts.servertype}"
-      mongrp: "%{facts.mongrp}"
-    retry_join:
-      - "%{facts.consul_server}"
+      servertype: "%{lookup('maul::datacenter')}"
+      mongrp: "%{lookup('maul::mongrp')}"
+    retry_join: "%{alias('maul::consul_retry')}"
 
 maul::consul::config:
   consul: "%{alias('maul::consul_config')}"
@@ -25,8 +28,7 @@ maul::consul::server::server_cfg:
   consul:
     config_hash:
       server: true
-      # FIXME - change bootstrap_expect to 3
-      bootstrap_expect: 1
+      bootstrap_expect: "%{lookup('maul::consul_servers')}"
 
 maul::consul::server::lvm:
   lv_consul:
@@ -47,5 +49,5 @@ maul::consul::firewall_cs:
 maul::consul::firewall_svc:
   consul:
     service: consul
-    zone: "%{facts.firewall_zone}"
+    zone: "%{lookup('maul::firewall_zone')}"
     ensure: present

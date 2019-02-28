@@ -1,6 +1,12 @@
 # 2019-02-10 (cc) <paul4hough@gmail.com>
 #
 ---
+maul::prometheus_config_dir: /etc/prometheus
+maul::prometheus_data_dir: /opt/prometheus/data
+maul::prometheus_lv_size: '2G'
+maul::prometheus_rules_repo: https://github.com/pahoughton/maul-prom-rules
+maul::prometheus_port: 9090
+
 
 maul::prom_consul_relabel:
   - source_labels: [__meta_consul_metadata_servertype]
@@ -12,7 +18,7 @@ maul::prom_consul_relabel:
 
 maul::prometheus::config:
   prometheus::server:
-    version: "%{lookup('maul::prometheus_version')}"
+    version: "2.7.1"
     localstorage: "%{lookup('maul::prometheus_data_dir')}"
     config_dir: "%{lookup('maul::prometheus_config_dir')}"
     storage_retention: 30d
@@ -23,7 +29,7 @@ maul::prometheus::config:
     alertmanagers_config:
       - consul_sd_configs:
           - node_meta:
-              mongrp: "%{facts.mongrp}"
+              mongrp: "%{lookup('maul::mongrp')}"
             refresh_interval: 5m
             services:
               - alertmanager
@@ -35,7 +41,7 @@ maul::prometheus::config:
         relabel_configs: "%{alias('maul::prom_consul_relabel')}"
         consul_sd_configs:
           - node_meta:
-              mongrp: "%{facts.prom_mongrp}"
+              mongrp: "%{lookup('maul::prom_mongrp')}"
             refresh_interval: 5m
             services:
               - prometheus
@@ -43,7 +49,7 @@ maul::prometheus::config:
         relabel_configs: "%{alias('maul::prom_consul_relabel')}"
         consul_sd_configs:
           - node_meta:
-              mongrp: "%{facts.prom_mongrp}"
+              mongrp: "%{lookup('maul::prom_mongrp')}"
             refresh_interval: 5m
             services:
               - node_exporter
@@ -53,7 +59,7 @@ maul::scrape_alertmanager:
   relabel_configs: "%{alias('maul::prom_consul_relabel')}"
   consul_sd_configs:
     - node_meta:
-        mongrp: "%{facts.prom_mongrp}"
+        mongrp: "%{lookup('maul::prom_mongrp')}"
       refresh_interval: 5m
       services:
         - alertmanager
@@ -63,7 +69,7 @@ maul::scrape_agate:
   relabel_configs: "%{alias('maul::prom_consul_relabel')}"
   consul_sd_configs:
     - node_meta:
-        mongrp: "%{facts.prom_mongrp}"
+        mongrp: "%{lookup('maul::prom_mongrp')}"
       refresh_interval: 5m
       services:
         - agate
@@ -98,7 +104,7 @@ maul::scrape_grafana:
   relabel_configs: "%{alias('maul::prom_consul_relabel')}"
   consul_sd_configs:
     - node_meta:
-        mongrp: "%{facts.prom_mongrp}"
+        mongrp: "%{lookup('maul::prom_mongrp')}"
       refresh_interval: 5m
       services:
         - grafana
@@ -126,7 +132,7 @@ maul::scrape_sysv:
   relabel_configs: "%{alias('maul::prom_consul_relabel')}"
   consul_sd_configs:
     - node_meta:
-        mongrp: "%{facts.prom_mongrp}"
+        mongrp: "%{lookup('maul::prom_mongrp')}"
       refresh_interval: 5m
       services:
         - process-exporter
@@ -147,7 +153,7 @@ maul::prometheus::consul_svc:
   prometheus:
     port: "%{lookup('maul::prometheus_port')}"
     meta:
-      mongrp: "%{facts.mongrp}"
+      mongrp: "%{lookup('maul::mongrp')}"
 
 maul::prometheus::lvm:
   lv_prometheus:
@@ -168,5 +174,5 @@ maul::prometheus::firewall_cs:
 maul::prometheus::firewall_svc:
   prometheus:
     service: prometheus
-    zone: "%{facts.firewall_zone}"
+    zone: "%{lookup('maul::firewall_zone')}"
     ensure: present

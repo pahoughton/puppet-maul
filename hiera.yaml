@@ -26,3 +26,5 @@ hierarchy:
     path: exporter-node.yml
   - name: blackbox exporter
     path: exporter-blackbox.yml
+  - name: alertmanager_cloudera exporter
+    path: exporter-alertmanager_cloudera.yml

@@ -1,9 +1,11 @@
 # 2019-02-12 (cc) <paul4hough@gmail.com>
 #
 ---
+maul::node_exporter_port: 9100
+
 maul::exporter::node::config:
   prometheus::node_exporter:
-    version: "%{lookup('maul::node_exporter_version')}"
+    version: "0.17.0"
     collectors_enable:
       - systemd
     # --web.disable-exporter-metrics
@@ -14,7 +16,7 @@ maul::exporter::node::consul_svc:
   node_exporter:
     port: "%{lookup('maul::node_exporter_port')}"
     meta:
-      mongrp: "%{facts.mongrp}"
+      mongrp: "%{lookup('maul::mongrp')}"
 
 maul::exporter::node::firewall_cs:
   node_exporter:
@@ -27,5 +29,5 @@ maul::exporter::node::firewall_cs:
 maul::exporter::node::firewall_svc:
   node_exporter:
     service: node_exporter
-    zone: "%{facts.firewall_zone}"
+    zone: "%{lookup('maul::firewall_zone')}"
     ensure: present

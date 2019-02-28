@@ -1,46 +1,21 @@
 # 2019-02-09 (cc) <paul4hough@gmail.com>
 #
 ---
+# fixme - set to consul servers
+maul::consul_retry:
+  - "%{facts.ipaddress_eth1}"
+maul::mongrp: a-1
+maul::prom_mongrp: a-1
+maul::datacenter: dc1
+maul::node_addr: "%{facts.ipaddress_eth1}"
+maul::firewall_zone: public
+maul::consul_servers: 1
 maul::lvm_vg: vg_maul
 
-maul::consul_version: "1.4.2"
-maul::consul_data_dir: /opt/consul/data
-maul::consul_lv_size: '2G'
-maul::consul_port: 8300
-
-maul::prometheus_version: "2.7.1"
-maul::prometheus_config_dir: /etc/prometheus
-maul::prometheus_data_dir: /opt/prometheus/data
-maul::prometheus_lv_size: '2G'
-maul::prometheus_rules_repo: https://github.com/pahoughton/maul-prom-rules
-maul::prometheus_port: 9090
-
-maul::alertmanager_version: '0.16.1'
-maul::alertmanager_data_dir: /opt/alertmanager/data
-maul::alertmanager_lv_size: '2G'
-maul::alertmanager_port: 9093
-maul::alertmanager_cluster_port: 9094
-
-maul::agate_version: '0.3.1'
-maul::agate_config_dir: /etc/agate
-maul::agate_data_dir: /opt/agate/data
-maul::agate_lv_size: '2G'
-maul::agate_scripts_repo: https://github.com/pahoughton/agate-scripts
-maul::agate_port: 4464
-# yamllint disable-line rule:line-length
-maul::agate_url: "http://%{facts.maul_agate_node}:%{lookup('maul::agate_port')}/alerts"
-maul::agate_mock_addr: localhost:6102
-
-maul::grafana_version: '5.4.3'
-maul::grafana_data_dir: /opt/grafana/data
-maul::grafana_lv_size: '2G'
-maul::grafana_port: 3000
-
-maul::blackbox_exporter_version: '0.13.0'
-maul::blackbox_exporter_port: 9115
-
-maul::consul_exporter_version: '0.4.0'
-maul::consul_exporter_port: 9107
-
-maul::node_exporter_version: '0.17.0'
-maul::node_exporter_port: 9100
+maul::prom_agate: true
+maul::prom_alertmanager: true
+maul::prom_cloudera: true
+maul::prom_consul: true
+maul::prom_grafana: true
+maul::prom_hpsm: true
+maul::prom_sysv: true

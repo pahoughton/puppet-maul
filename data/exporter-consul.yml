@@ -1,7 +1,9 @@
 # 2019-02-12 (cc) <paul4hough@gmail.com>
 #
 ---
+maul::consul_exporter_port: 9107
+
 maul::exporter::consul::config:
   prometheus::consul_exporter:
-    version: "%{lookup('maul::consul_exporter_version')}"
+    version: "0.4.0"
     web_listen_address: ":%{lookup('maul::consul_exporter_port')}"

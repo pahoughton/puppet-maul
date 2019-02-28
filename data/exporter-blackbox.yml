@@ -1,6 +1,14 @@
 # 2019-02-12 (cc) <paul4hough@gmail.com>
 #
 ---
+
+maul::blackbox_exporter_port: 9115
+
+maul::exporter::blackbox::config:
+  prometheus::blackbox_exporter:
+    version: "0.13.0"
+    modules: ~
+
 maul::blackbox_mod_cloudera:
   cloudera:
     prober: http
@@ -18,8 +26,3 @@ maul::blackbox_mod_hpsm:
       basic_auth:
         username: maulccop
         password: secret-sause
-
-maul::exporter::blackbox::config:
-  prometheus::blackbox_exporter:
-    version: "%{lookup('maul::blackbox_exporter_version')}"
-    modules: ~

@@ -24,7 +24,11 @@ class maul::prometheus(
   $scr = 'scrape_configs'
   $rul = 'rule_files'
 
-  if $facts['maul_alert_agate'] {
+  $mon_agate = pick(
+    $facts['maul_prom_agate'],
+    lookup('maul::prom_agate'))
+
+  if $mon_agate {
     $cfg_agate = {
       'prometheus::server' => {
         scrape_configs  => $config[$cls][$scr] << lookup('maul::scrape_agate'),
@@ -35,7 +39,11 @@ class maul::prometheus(
     $cfg_agate = $config
   }
 
-  if $facts['maul_alert_alertmanager'] {
+  $mon_alertmanager = pick(
+    $facts['maul_prom_alertmanager'],
+    lookup('maul::prom_alertmanager'))
+
+  if $mon_alertmanager {
     $cfg_amgr = {
       'prometheus::server' => {
         scrape_configs  => $cfg_agate[$cls][$scr] << lookup('maul::scrape_alertmanager'),
@@ -46,7 +54,11 @@ class maul::prometheus(
     $cfg_amgr = $cfg_agate
   }
 
-  if $facts['maul_alert_cloudera'] {
+  $mon_cloudera = pick(
+    $facts['maul_prom_cloudera'],
+    lookup('maul::prom_cloudera'))
+
+  if $mon_cloudera {
     $cfg_cloudera = {
       'prometheus::server' => {
         scrape_configs  => $cfg_amgr[$cls][$scr] << lookup('maul::scrape_cloudera'),
@@ -65,7 +77,11 @@ class maul::prometheus(
     $cfg_cloudera = $cfg_amgr
   }
 
-  if $facts['maul_alert_consul'] {
+  $mon_consul = pick(
+    $facts['maul_prom_consul'],
+    lookup('maul::prom_consul'))
+
+  if $mon_consul {
     $cfg_consul = {
       'prometheus::server' => {
         scrape_configs  => $cfg_cloudera[$cls][$scr] << lookup('maul::scrape_consul'),
@@ -76,7 +92,11 @@ class maul::prometheus(
     $cfg_consul = $cfg_cloudera
   }
 
-  if $facts['maul_alert_grafana'] {
+  $mon_grafana = pick(
+    $facts['maul_prom_grafana'],
+    lookup('maul::prom_grafana'))
+
+  if $mon_grafana {
     $cfg_grafana = {
       'prometheus::server' => {
         scrape_configs  => $cfg_consul[$cls][$scr] << lookup('maul::scrape_grafana'),
@@ -87,7 +107,11 @@ class maul::prometheus(
     $cfg_grafana = $cfg_consul
   }
 
-  if $facts['maul_alert_hpsm'] {
+  $mon_hpsm = pick(
+    $facts['maul_prom_hpsm'],
+    lookup('maul::prom_hpsm'))
+
+  if $mon_hpsm {
     $cfg_hpsm = {
       'prometheus::server' => {
         scrape_configs  => $cfg_grafana[$cls][$scr] << lookup('maul::scrape_hpsm'),
@@ -106,7 +130,11 @@ class maul::prometheus(
     $cfg_hpsm = $cfg_grafana
   }
 
-  if $facts['maul_alert_sysv'] {
+  $mon_sysv = pick(
+    $facts['maul_prom_sysv'],
+    lookup('maul::prom_sysv'))
+
+  if $mon_sysv {
     $cfg_sysv = {
       'prometheus::server' => {
         scrape_configs  => $cfg_hpsm[$cls][$scr] << lookup('maul::scrape_sysv'),
