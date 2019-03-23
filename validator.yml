@@ -1,0 +1,16 @@
+# 2019-03-23 (cc) <paul4hough@gmail.com>
+#
+---
+- check / use prometheus test code
+
+- mock-exporter
+  - metrics:
+    - mock_counter
+    - mock_gauge
+    - mock_histogram
+    - mock_summary
+  - values array
+    - duration
+    - value
+  - api:
+    - metric/set?value=x&dur=2m

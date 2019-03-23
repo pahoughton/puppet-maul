@@ -4,6 +4,15 @@ class maul::exporter::blackbox(
   Hash $config,
 ) {
 
+  if $facts['maul_alert_gitlab'] {
+    $mod_gitlab = {
+      'prometheus::blackbox_exporter' => {
+        modules => lookup('maul::blackbox_mod_gitlab'),
+      }
+    }
+  } else {
+    $mod_gitlab = {}
+  }
   if $facts['maul_alert_cloudera'] {
     $mod_cloudera = {
       'prometheus::blackbox_exporter' => {
@@ -24,6 +33,7 @@ class maul::exporter::blackbox(
   }
   $blackbox_cfg = deep_merge(
     $config,
+    $mod_gitlab,
     $mod_cloudera,
     $mod_hpsm)
 

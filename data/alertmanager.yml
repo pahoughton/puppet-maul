@@ -3,7 +3,7 @@
 ---
 
 # yamllint disable-line rule:line-length
-maul::agate_url: "http://%{maul::agate_node}:%{lookup('maul::agate_port')}/alerts"
+maul::agate_url: "http://%{lookup('maul::agate_node')}:%{lookup('maul::agate_port')}/alerts"
 maul::alertmanager_data_dir: /opt/alertmanager/data
 maul::alertmanager_lv_size: '2G'
 maul::alertmanager_port: 9093
@@ -37,7 +37,7 @@ maul::alertmanager::config:
 
 maul::alertmanager::lvm:
   lv_alertmanager:
-    pv: /dev/sdb
+    pv: "%{lookup('maul::pv_dev')}"
     vg: "%{lookup('maul::lvm_vg')}"
     fstype: xfs
     size: "%{lookup('maul::alertmanager_lv_size')}"

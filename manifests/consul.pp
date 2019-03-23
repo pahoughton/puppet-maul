@@ -22,6 +22,9 @@ class maul::consul(
     }
   )
 
+  $consul_mp = dirname( lookup('maul::consul_data_dir') )
+  ensure_resource( 'file', $consul_mp, { ensure => 'directory' })
+
   create_resources('firewalld::custom_service', $firewall_cs)
   create_resources('firewalld_service', $firewall_svc)
 

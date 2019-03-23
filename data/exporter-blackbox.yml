@@ -9,6 +9,14 @@ maul::exporter::blackbox::config:
     version: "0.13.0"
     modules: ~
 
+maul::blackbox_mod_gitlab:
+  gitlab:
+    prober: http
+    http:
+      basic_auth:
+        username: maulccop
+        password: secret-sause
+
 maul::blackbox_mod_cloudera:
   cloudera:
     prober: http

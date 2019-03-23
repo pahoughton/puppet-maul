@@ -12,7 +12,6 @@ class maul::prometheus(
     [ 'unzip',
       'e2fsprogs',
       'lvm2',
-      'firewalld',
       'git'],
     {'ensure' => 'present' })
 
@@ -24,11 +23,7 @@ class maul::prometheus(
   $scr = 'scrape_configs'
   $rul = 'rule_files'
 
-  $mon_agate = pick(
-    $facts['maul_prom_agate'],
-    lookup('maul::prom_agate'))
-
-  if $mon_agate {
+  if lookup('maul::prom_agate') {
     $cfg_agate = {
       'prometheus::server' => {
         scrape_configs  => $config[$cls][$scr] << lookup('maul::scrape_agate'),
@@ -39,11 +34,7 @@ class maul::prometheus(
     $cfg_agate = $config
   }
 
-  $mon_alertmanager = pick(
-    $facts['maul_prom_alertmanager'],
-    lookup('maul::prom_alertmanager'))
-
-  if $mon_alertmanager {
+  if lookup('maul::prom_alertmanager') {
     $cfg_amgr = {
       'prometheus::server' => {
         scrape_configs  => $cfg_agate[$cls][$scr] << lookup('maul::scrape_alertmanager'),
@@ -54,34 +45,18 @@ class maul::prometheus(
     $cfg_amgr = $cfg_agate
   }
 
-  $mon_cloudera = pick(
-    $facts['maul_prom_cloudera'],
-    lookup('maul::prom_cloudera'))
-
-  if $mon_cloudera {
+  if lookup('maul::prom_cloudera') {
     $cfg_cloudera = {
       'prometheus::server' => {
         scrape_configs  => $cfg_amgr[$cls][$scr] << lookup('maul::scrape_cloudera'),
         rule_files      => $cfg_amgr[$cls][$rul] << 'rules/alerts/cloudera/*.yml'
       }
     }
-    $cloudera_targets = lookup('maul::bbox_cloudera_targets')
-    file { "${targdir}/cloudera.json":
-      ensure  => 'present',
-      owner   => 'prometheus',
-      group   => 'prometheus',
-      mode    => '0664',
-      content => template('maul/targets-cloudera.json.erb'),
-    }
   } else {
     $cfg_cloudera = $cfg_amgr
   }
 
-  $mon_consul = pick(
-    $facts['maul_prom_consul'],
-    lookup('maul::prom_consul'))
-
-  if $mon_consul {
+  if lookup('maul::prom_consul') {
     $cfg_consul = {
       'prometheus::server' => {
         scrape_configs  => $cfg_cloudera[$cls][$scr] << lookup('maul::scrape_consul'),
@@ -92,11 +67,7 @@ class maul::prometheus(
     $cfg_consul = $cfg_cloudera
   }
 
-  $mon_grafana = pick(
-    $facts['maul_prom_grafana'],
-    lookup('maul::prom_grafana'))
-
-  if $mon_grafana {
+  if lookup('maul::prom_grafana') {
     $cfg_grafana = {
       'prometheus::server' => {
         scrape_configs  => $cfg_consul[$cls][$scr] << lookup('maul::scrape_grafana'),
@@ -107,11 +78,7 @@ class maul::prometheus(
     $cfg_grafana = $cfg_consul
   }
 
-  $mon_hpsm = pick(
-    $facts['maul_prom_hpsm'],
-    lookup('maul::prom_hpsm'))
-
-  if $mon_hpsm {
+  if lookup('maul::prom_hpsm') {
     $cfg_hpsm = {
       'prometheus::server' => {
         scrape_configs  => $cfg_grafana[$cls][$scr] << lookup('maul::scrape_hpsm'),
@@ -130,11 +97,17 @@ class maul::prometheus(
     $cfg_hpsm = $cfg_grafana
   }
 
-  $mon_sysv = pick(
-    $facts['maul_prom_sysv'],
-    lookup('maul::prom_sysv'))
+  if lookup('maul::prom_sysd') {
+    $cfg_sysd = {
+      'prometheus::server' => {
+        rule_files      => $cfg_hpsm[$cls][$rul] << 'rules/alerts/systemd/*.yml'
+      }
+    }
+  } else {
+    $cfg_sysd = $cfg_hpsm
+  }
 
-  if $mon_sysv {
+  if lookup('maul::prom_sysv') {
     $cfg_sysv = {
       'prometheus::server' => {
         scrape_configs  => $cfg_hpsm[$cls][$scr] << lookup('maul::scrape_sysv'),
@@ -142,12 +115,12 @@ class maul::prometheus(
       }
     }
   } else {
-    $cfg_sysv = $cfg_hpsm
+    $cfg_sysv = $cfg_sysd
   }
 
   $cfg_prom = deep_merge(
     $config,
-    $cfg_sysv)
+    $cfg_sysd)
 
   create_resources( 'class', $cfg_prom )
 
@@ -158,10 +131,8 @@ class maul::prometheus(
     mode   => '0775',
   }
 
-  # FIXME - yaml'ize notify?
-  $cfgdir = lookup('maul::prometheus_config_dir')
-  vcsrepo { "${cfgdir}/rules":
-    ensure   => 'present',
+  vcsrepo { "${lookup('maul::prometheus_config_dir')}/rules":
+    ensure   => 'latest',
     provider => 'git',
     source   => lookup('maul::prometheus_rules_repo'),
     require  => [ Class['prometheus::config'],
@@ -195,7 +166,6 @@ class maul::prometheus(
   Package['unzip']
   -> Package['e2fsprogs']
   -> Package['lvm2']
-  -> Package['firewalld']
   -> Package['git']
   -> Lvm::Volume['lv_prometheus']
   -> Mount[$prom_mp]

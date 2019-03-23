@@ -2,19 +2,20 @@
 #
 ---
 
-maul::consul_data_dir: /opt/consul/data
 maul::consul_lv_size: '2G'
-maul::consul_port: 8300
+maul::consul_data_dir: /opt/consul/data
+maul::consul_server_port: 8300
+maul::consul_gossip_port: 8301
 
 maul::consul_config:
-  version: "1.4.2"
+  version: "1.4.3"
   pretty_config: true
   config_hash:
     data_dir: "%{lookup('maul::consul_data_dir')}"
     datacenter: "%{lookup('maul::datacenter')}"
     bind_addr: "%{lookup('maul::node_addr')}"
     node_meta:
-      servertype: "%{lookup('maul::datacenter')}"
+      servertype: "%{lookup('maul::servertype')}"
       mongrp: "%{lookup('maul::mongrp')}"
     retry_join: "%{alias('maul::consul_retry')}"
 
@@ -32,7 +33,7 @@ maul::consul::server::server_cfg:
 
 maul::consul::server::lvm:
   lv_consul:
-    pv: /dev/sdb
+    pv: "%{lookup('maul::pv_dev')}"
     vg: "%{lookup('maul::lvm_vg')}"
     fstype: xfs
     size: "%{lookup('maul::consul_lv_size')}"
@@ -43,7 +44,11 @@ maul::consul::firewall_cs:
     short: consul
     description: consul service discovery
     port:
-      - port: "%{lookup('maul::consul_port')}"
+      - port: "%{lookup('maul::consul_gossip_port')}"
+        protocol: tcp
+      - port: "%{lookup('maul::consul_gossip_port')}"
+        protocol: udp
+      - port: "%{lookup('maul::consul_server_port')}"
         protocol: tcp
 
 maul::consul::firewall_svc:

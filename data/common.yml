@@ -1,21 +1,23 @@
 # 2019-02-09 (cc) <paul4hough@gmail.com>
 #
 ---
-# fixme - set to consul servers
-maul::consul_retry:
-  - "%{facts.ipaddress_eth1}"
-maul::mongrp: a-1
-maul::prom_mongrp: a-1
-maul::datacenter: dc1
+
+maul::consul_retry: "%{facts.maul_consul_retry}"
+maul::mongrp: "%{facts.maul_mongrp}"
+maul::prom_mongrp: "%{facts.maul_prom_mongrp}"
+maul::datacenter: "%{facts.maul_datacenter}"
+maul::servertype: "%{facts.maul_servertype}"
 maul::node_addr: "%{facts.ipaddress_eth1}"
-maul::firewall_zone: public
-maul::consul_servers: 1
+maul::firewall_zone: "%{facts.maul_firewall_zone}"
+maul::consul_servers: 2
+maul::pv_dev: "%{facts.maul_vg_dev}"
 maul::lvm_vg: vg_maul
 
-maul::prom_agate: true
-maul::prom_alertmanager: true
-maul::prom_cloudera: true
-maul::prom_consul: true
-maul::prom_grafana: true
-maul::prom_hpsm: true
-maul::prom_sysv: true
+maul::prom_agate: "%{facts.maul_alert_agate}"
+maul::prom_alertmanager: "%{facts.maul_alert_alertmanager}"
+maul::prom_cloudera: "%{facts.maul_alert_cloudera}"
+maul::prom_consul: "%{facts.maul_alert_consul}"
+maul::prom_grafana: "%{facts.maul_alert_grafana}"
+maul::prom_hpsm: "%{facts.maul_alert_hpsm}"
+maul::prom_sysd: "%{facts.maul_alert_sysd}"
+maul::prom_sysv: "%{facts.maul_alert_sysv}"

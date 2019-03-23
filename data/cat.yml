@@ -1,7 +1,7 @@
 # 2019-02-28 (cc) <paul4hough@gmail.com>
 #
 ---
-maul::exporter::alertmanager_cloudera::config:
+maul::cat::config:
   alertmanager_cloudera:
     config:
       global:

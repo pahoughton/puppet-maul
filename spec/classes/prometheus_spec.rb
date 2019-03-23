@@ -17,13 +17,11 @@ describe tobj, :type => :class do
       ['unzip',
        'e2fsprogs',
        'lvm2',
-       'firewalld',
        'git'].each { |pkg|
         it { is_expected.to contain_package(pkg)}
       }
       it { is_expected.to contain_vcsrepo('/etc/prometheus/rules') }
       it { is_expected.to contain_file('/etc/prometheus/targets') }
-      it { is_expected.to contain_file('/etc/prometheus/targets/cloudera.json') }
       it { is_expected.to contain_file('/etc/prometheus/targets/hpsm.json') }
       it { is_expected.to contain_consul__service('prometheus') }
       it { is_expected.to contain_lvm__volume('lv_prometheus') }

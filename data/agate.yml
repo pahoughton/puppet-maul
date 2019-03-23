@@ -22,13 +22,13 @@ maul::agate::config:
 
 maul::agate::vcs_scripts:
   "%{lookup('maul::agate_config_dir')}/scripts":
-    ensure: present
+    ensure: latest
     provider: git
     source: "%{lookup('maul::agate_scripts_repo')}"
 
 maul::agate::lvm:
   lv_agate:
-    pv: /dev/sdb
+    pv: "%{lookup('maul::pv_dev')}"
     vg: "%{lookup('maul::lvm_vg')}"
     fstype: xfs
     size: "%{lookup('maul::agate_lv_size')}"

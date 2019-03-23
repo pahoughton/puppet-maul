@@ -10,21 +10,25 @@ defaults:
 hierarchy:
   - name: common
     path: common.yml
-  - name: consul
-    path: consul.yml
-  - name: prometheus
-    path: prometheus.yml
-  - name: alertmanager
-    path: alertmanager.yml
   - name: agate
     path: agate.yml
+  - name: alertmanager
+    path: alertmanager.yml
+  - name: cat
+    path: cat.yml
+  - name: consul
+    path: consul.yml
   - name: grafana
     path: grafana.yml
-  - name: consul exporter
-    path: exporter-consul.yml
-  - name: node exporter
-    path: exporter-node.yml
-  - name: blackbox exporter
+  - name: prometheus
+    path: prometheus.yml
+  - name: blackbox
     path: exporter-blackbox.yml
-  - name: alertmanager_cloudera exporter
-    path: exporter-alertmanager_cloudera.yml
+  - name: exporter-consul
+    path: exporter-consul.yml
+  - name: exporter-node
+    path: exporter-node.yml
+  - name: exporter-postgres
+    path: exporter-postgres.yml
+  - name: exporter-process
+    path: exporter-process.yml

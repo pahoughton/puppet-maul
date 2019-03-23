@@ -13,7 +13,7 @@ maul::grafana::config:
 
 maul::grafana::lvm:
   lv_grafana:
-    pv: /dev/sdb
+    pv: "%{lookup('maul::pv_dev')}"
     vg: "%{lookup('maul::lvm_vg')}"
     fstype: xfs
     size: "%{lookup('maul::grafana_lv_size')}"

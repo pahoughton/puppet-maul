@@ -2,7 +2,7 @@
 #
 require 'spec_helper'
 
-tobj = 'maul::exporter::alertmanager_cloudera'
+tobj = 'maul::cat'
 describe tobj, :type => :class do
   on_supported_os.each do |os, facts|
     context "on #{os}" do
