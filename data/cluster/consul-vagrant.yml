@@ -1,0 +1,6 @@
+# 2019-03-27 (cc) <paul4hough@gmail.com>
+#
+---
+maul::consul_retry:
+  - 10.0.7.5
+  - 10.0.7.6

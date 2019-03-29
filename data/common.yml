@@ -2,9 +2,6 @@
 #
 ---
 
-maul::consul_retry: "%{facts.maul_consul_retry}"
-maul::mongrp: "%{facts.maul_mongrp}"
-maul::prom_mongrp: "%{facts.maul_prom_mongrp}"
 maul::datacenter: "%{facts.maul_datacenter}"
 maul::servertype: "%{facts.maul_servertype}"
 maul::node_addr: "%{facts.ipaddress_eth1}"

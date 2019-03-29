@@ -10,15 +10,15 @@ include RspecPuppetFacts
 RSpec.configure do |c|
   c.fail_fast       = true
   c.default_facts   = {
-    'maul_consul_retry'       => ['10.0.7.6',
-                                  '10.0.7.7',],
-    'maul_firewall_zone'      => 'public',
-    'maul_datacenter'         => 'dc-maul',
-    'maul_servertype'         => 'maul',
-    'maul_mongrp'             => 'a-1',
-    'maul_prom_mongrp'        => 'a-1',
+    'maul_consul_cluster'   => 'vagrant',
+    'maul_prom_cluster'     => 'vagrant',
+    'maul_firewall_zone'    => 'public',
+    'maul_datacenter'       => 'dc-maul',
+    'maul_servertype'       => 'maul',
+    'maul_mongrp'           => 'a-1',
+    'maul_prom_mongrp'      => 'a-1',
+    'maul_vg_dev'           => '/dev/sdb',
     'maul_agate_node'         => '10.0.7.5',
-    'maul_vg_dev'             => '/dev/sdb',
     'maul_alert_agate'        => true,
     'maul_alert_alertmanager' => true,
     'maul_alert_cloudera'     => true,

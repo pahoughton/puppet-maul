@@ -1,0 +1,6 @@
+# 2019-03-27 (cc) <paul4hough@gmail.com>
+#
+---
+maul::mongrp: "%{facts.maul_mongrp}"
+maul::prom_mongrp: "%{facts.maul_prom_mongrp}"
+maul::agate_node: 10.0.7.5
