@@ -18,7 +18,7 @@ maul::prom_consul_relabel:
 
 maul::prometheus::config:
   prometheus::server:
-    version: "2.7.1"
+    version: "%{lookup('maul::prometheus_version')}"
     localstorage: "%{lookup('maul::prometheus_data_dir')}"
     config_dir: "%{lookup('maul::prometheus_config_dir')}"
     storage_retention: 30d
